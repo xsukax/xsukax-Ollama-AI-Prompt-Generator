@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>xsukax Ollama AI Prompt Generator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif; }
+        :root { --primary-color: #2da44e; --primary-dark: #2c974b; --text-color: #24292f; --border-color: #d0d7de; --bg-color: #ffffff; --card-bg: #f6f8fa; --sidebar-bg: #f6f8fa; --hover-bg: #f3f4f6; --shadow: 0 3px 6px rgba(140, 149, 159, 0.15); --radius: 6px; }
+        body { background-color: #fafbfc; color: var(--text-color); line-height: 1.5; min-height: 100vh; padding: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 280px 1fr; gap: 24px; }
+        header { grid-column: 1 / -1; padding: 20px 0; margin-bottom: 10px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
+        .logo { display: flex; align-items: center; gap: 12px; }
+        .logo-icon { background-color: var(--primary-color); color: white; width: 40px; height: 40px; border-radius: var(--radius); display: flex; align-items: center; justify-content: center; font-size: 20px; }
+        .logo-text h1 { font-size: 24px; font-weight: 600; }
+        .logo-text p { font-size: 14px; color: #57606a; }
+        .api-status { display: flex; align-items: center; gap: 8px; font-size: 14px; padding: 6px 12px; border-radius: var(--radius); background-color: var(--card-bg); border: 1px solid var(--border-color); }
+        .status-dot { width: 10px; height: 10px; border-radius: 50%; background-color: #e34c26; }
+        .status-dot.connected { background-color: var(--primary-color); }
+        .sidebar { background-color: var(--sidebar-bg); border-radius: var(--radius); border: 1px solid var(--border-color); padding: 20px; height: fit-content; }
+        .sidebar h2 { font-size: 18px; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+        .model-list { list-style: none; margin-bottom: 20px; max-height: 300px; overflow-y: auto; }
+        .model-item { padding: 10px 12px; border-radius: var(--radius); margin-bottom: 8px; border: 1px solid transparent; cursor: pointer; transition: all 0.2s ease; display: flex; justify-content: space-between; align-items: center; }
+        .model-item:hover { background-color: var(--hover-bg); border-color: var(--border-color); }
+        .model-item.active { background-color: #ddf4ff; border-color: #84d8ff; color: #0969da; }
+        .model-name { font-weight: 500; }
+        .model-size { font-size: 12px; color: #57606a; }
+        .refresh-btn { width: 100%; padding: 10px; background-color: var(--bg-color); border: 1px solid var(--border-color); border-radius: var(--radius); color: var(--text-color); font-weight: 500; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .refresh-btn:hover { background-color: var(--hover-bg); }
+        .main-content { display: flex; flex-direction: column; gap: 20px; }
+        .card { background-color: var(--bg-color); border-radius: var(--radius); border: 1px solid var(--border-color); box-shadow: var(--shadow); padding: 24px; }
+        .card h2 { font-size: 20px; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+        .card-icon { color: var(--primary-color); }
+        .input-group { margin-bottom: 20px; }
+        .input-group label { display: block; margin-bottom: 8px; font-weight: 500; }
+        .textarea-control { width: 100%; min-height: 150px; padding: 12px; border-radius: var(--radius); border: 1px solid var(--border-color); font-size: 15px; resize: vertical; transition: border-color 0.2s ease; }
+        .textarea-control:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(45, 164, 78, 0.1); }
+        .btn-primary { background-color: var(--primary-color); color: white; border: none; padding: 12px 24px; border-radius: var(--radius); font-weight: 500; font-size: 16px; cursor: pointer; transition: background-color 0.2s ease; display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; }
+        .btn-primary:hover { background-color: var(--primary-dark); }
+        .btn-primary:disabled { background-color: #94d3a2; cursor: not-allowed; }
+        .response-container { margin-top: 8px; position: relative; }
+        .response-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .copy-btn { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 6px 12px; font-size: 14px; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; gap: 6px; }
+        .copy-btn:hover { background-color: var(--hover-bg); }
+        .copy-btn.success { background-color: #dafbe1; border-color: #4ac26b; color: #1a7f37; }
+        .loading { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 0; }
+        .spinner { width: 40px; height: 40px; border: 3px solid rgba(45, 164, 78, 0.2); border-radius: 50%; border-top-color: var(--primary-color); animation: spin 1s ease-in-out infinite; margin-bottom: 16px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .streaming-indicator { display: none; align-items: center; gap: 8px; font-size: 14px; color: var(--primary-color); margin-bottom: 8px; }
+        .streaming-indicator.active { display: flex; }
+        .streaming-dot { width: 8px; height: 8px; background-color: var(--primary-color); border-radius: 50%; animation: pulse 1.5s ease-in-out infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+        .instructions { background-color: #ddf4ff; border: 1px solid #84d8ff; border-radius: var(--radius); padding: 16px; margin-top: 20px; font-size: 14px; }
+        .instructions h3 { color: #0969da; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+        .error-message { background-color: #ffebe9; border: 1px solid #ff8182; border-radius: var(--radius); padding: 16px; margin-top: 20px; color: #cf222e; display: none; }
+        .error-message.show { display: block; }
+        footer { grid-column: 1 / -1; margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--border-color); text-align: center; color: #57606a; font-size: 14px; }
+        @media (max-width: 768px) { .container { grid-template-columns: 1fr; } header { flex-direction: column; gap: 16px; align-items: flex-start; } .model-list { max-height: 200px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <div class="logo-icon"><i class="fas fa-robot"></i></div>
+                <div class="logo-text">
+                    <h1>xsukax Ollama AI Prompt Generator</h1>
+                    <p>Enhance your AI prompts with expert engineering</p>
+                </div>
+            </div>
+            <div class="api-status">
+                <div class="status-dot" id="statusDot"></div>
+                <span id="statusText">Connecting to Ollama...</span>
+            </div>
+        </header>
+
+        <aside class="sidebar">
+            <h2><i class="fas fa-database card-icon"></i> Available Models</h2>
+            <ul class="model-list" id="modelList">
+                <li class="model-item"><span class="model-name">Loading models...</span></li>
+            </ul>
+            <button class="refresh-btn" id="refreshModels"><i class="fas fa-sync-alt"></i> Refresh Models</button>
+        </aside>
+
+        <main class="main-content">
+            <section class="card">
+                <h2><i class="fas fa-pen-alt card-icon"></i> Original Prompt</h2>
+                <div class="input-group">
+                    <label for="originalPrompt">Enter your prompt to enhance:</label>
+                    <textarea id="originalPrompt" class="textarea-control" placeholder="Example: Write a story about a robot learning to paint..." rows="6"></textarea>
+                </div>
+                <button class="btn-primary" id="enhanceBtn"><i class="fas fa-magic"></i> Enhance Prompt</button>
+                <div class="instructions">
+                    <h3><i class="fas fa-lightbulb"></i> How it works</h3>
+                    <p>Select a model from the sidebar, enter your prompt, and click "Enhance Prompt". The AI will stream the enhanced version in real-time, making it more detailed, specific, and effective.</p>
+                </div>
+                <div class="error-message" id="errorMessage">
+                    <strong><i class="fas fa-exclamation-triangle"></i> Error:</strong> 
+                    <span id="errorText"></span>
+                </div>
+            </section>
+
+            <section class="card">
+                <div class="response-header">
+                    <h2><i class="fas fa-star card-icon"></i> Enhanced Prompt</h2>
+                    <button class="copy-btn" id="copyBtn"><i class="far fa-copy"></i> Copy</button>
+                </div>
+                <div class="streaming-indicator" id="streamingIndicator">
+                    <div class="streaming-dot"></div>
+                    <span>Streaming response...</span>
+                </div>
+                <div class="input-group">
+                    <div class="response-container">
+                        <textarea id="enhancedPrompt" class="textarea-control" placeholder="Your enhanced prompt will appear here in real-time..." rows="8" readonly></textarea>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>xsukax Ollama AI Prompt Generator | Built with Ollama API | Real-time Streaming Edition</p>
+        </footer>
+    </div>
+
+    <script>
+        const OLLAMA_BASE_URL = 'http://localhost:11434';
+        
+        const modelList = document.getElementById('modelList');
+        const refreshModelsBtn = document.getElementById('refreshModels');
+        const originalPrompt = document.getElementById('originalPrompt');
+        const enhanceBtn = document.getElementById('enhanceBtn');
+        const enhancedPrompt = document.getElementById('enhancedPrompt');
+        const copyBtn = document.getElementById('copyBtn');
+        const streamingIndicator = document.getElementById('streamingIndicator');
+        const errorMessage = document.getElementById('errorMessage');
+        const errorText = document.getElementById('errorText');
+        const statusDot = document.getElementById('statusDot');
+        const statusText = document.getElementById('statusText');
+        
+        let models = [];
+        let selectedModel = null;
+        let isGenerating = false;
+        let abortController = null;
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            checkOllamaConnection();
+            loadModels();
+            refreshModelsBtn.addEventListener('click', loadModels);
+            enhanceBtn.addEventListener('click', enhancePrompt);
+            copyBtn.addEventListener('click', copyEnhancedPrompt);
+            originalPrompt.value = "Write a story about a robot learning to paint";
+        });
+        
+        async function checkOllamaConnection() {
+            try {
+                const response = await fetch(`${OLLAMA_BASE_URL}/api/tags`, { method: 'GET', headers: { 'Content-Type': 'application/json' } });
+                if (response.ok) {
+                    statusDot.classList.add('connected');
+                    statusText.textContent = 'Connected to Ollama';
+                } else {
+                    statusText.textContent = 'Ollama not responding';
+                }
+            } catch (error) {
+                statusText.textContent = 'Cannot connect to Ollama';
+                showError('Cannot connect to Ollama API. Please ensure Ollama is running locally on port 11434.');
+            }
+        }
+        
+        async function loadModels() {
+            try {
+                refreshModelsBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+                refreshModelsBtn.disabled = true;
+                const response = await fetch(`${OLLAMA_BASE_URL}/api/tags`);
+                if (!response.ok) throw new Error(`Failed to fetch models: ${response.status}`);
+                const data = await response.json();
+                models = data.models || [];
+                if (models.length === 0) throw new Error('No models found. Please download models in Ollama first.');
+                renderModelList();
+                if (models.length > 0 && !selectedModel) {
+                    selectedModel = models[0].name;
+                    updateSelectedModel();
+                }
+                hideError();
+            } catch (error) {
+                showError(`Failed to load models: ${error.message}`);
+                modelList.innerHTML = '<li class="model-item"><span class="model-name">Error loading models</span></li>';
+            } finally {
+                refreshModelsBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Refresh Models';
+                refreshModelsBtn.disabled = false;
+            }
+        }
+        
+        function renderModelList() {
+            modelList.innerHTML = '';
+            if (models.length === 0) {
+                modelList.innerHTML = '<li class="model-item"><span class="model-name">No models available</span></li>';
+                return;
+            }
+            models.forEach(model => {
+                const li = document.createElement('li');
+                li.className = 'model-item';
+                if (model.name === selectedModel) li.classList.add('active');
+                li.innerHTML = `<span class="model-name">${model.name}</span><span class="model-size">${formatModelSize(model.size)}</span>`;
+                li.addEventListener('click', () => {
+                    selectedModel = model.name;
+                    updateSelectedModel();
+                });
+                modelList.appendChild(li);
+            });
+        }
+        
+        function updateSelectedModel() {
+            const modelItems = document.querySelectorAll('.model-item');
+            modelItems.forEach(item => {
+                const modelNameElement = item.querySelector('.model-name');
+                if (modelNameElement && modelNameElement.textContent === selectedModel) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+        }
+        
+        function formatModelSize(bytes) {
+            if (bytes === undefined) return 'N/A';
+            const sizes = ['B', 'KB', 'MB', 'GB'];
+            if (bytes === 0) return '0 B';
+            const i = Math.floor(Math.log(bytes) / Math.log(1024));
+            return Math.round(bytes / Math.pow(1024, i)) + ' ' + sizes[i];
+        }
+        
+        async function enhancePrompt() {
+            const promptText = originalPrompt.value.trim();
+            if (!promptText) {
+                showError('Please enter a prompt to enhance.');
+                return;
+            }
+            if (!selectedModel) {
+                showError('Please select a model from the sidebar.');
+                return;
+            }
+            if (isGenerating) return;
+            
+            isGenerating = true;
+            enhanceBtn.disabled = true;
+            enhanceBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enhancing...';
+            streamingIndicator.classList.add('active');
+            enhancedPrompt.value = '';
+            hideError();
+            
+            abortController = new AbortController();
+            
+            try {
+                const systemMessage = "You are a prompt engineering expert. Enhance the following prompt to make it more effective:";
+                const fullPrompt = `${systemMessage}\nOriginal Prompt: ${promptText}\nEnhanced Prompt (provide only the improved version):`;
+                
+                const response = await fetch(`${OLLAMA_BASE_URL}/api/generate`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        model: selectedModel,
+                        prompt: fullPrompt,
+                        stream: true,
+                        options: { temperature: 0.7, top_p: 0.9 }
+                    }),
+                    signal: abortController.signal
+                });
+                
+                if (!response.ok) throw new Error(`API request failed: ${response.status}`);
+                
+                const reader = response.body.getReader();
+                const decoder = new TextDecoder();
+                let buffer = '';
+                
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) break;
+                    
+                    buffer += decoder.decode(value, { stream: true });
+                    const lines = buffer.split('\n');
+                    buffer = lines.pop();
+                    
+                    for (const line of lines) {
+                        if (line.trim() === '') continue;
+                        try {
+                            const json = JSON.parse(line);
+                            if (json.response) {
+                                enhancedPrompt.value += json.response;
+                                enhancedPrompt.scrollTop = enhancedPrompt.scrollHeight;
+                            }
+                            if (json.done) break;
+                        } catch (e) {
+                            console.error('Failed to parse JSON:', e);
+                        }
+                    }
+                }
+                
+                if (!enhancedPrompt.value.trim()) {
+                    throw new Error('No response received from the model.');
+                }
+                
+            } catch (error) {
+                if (error.name === 'AbortError') {
+                    showError('Request was cancelled.');
+                } else {
+                    showError(`Failed to enhance prompt: ${error.message}`);
+                }
+            } finally {
+                isGenerating = false;
+                enhanceBtn.disabled = false;
+                enhanceBtn.innerHTML = '<i class="fas fa-magic"></i> Enhance Prompt';
+                streamingIndicator.classList.remove('active');
+                abortController = null;
+            }
+        }
+        
+        async function copyEnhancedPrompt() {
+            const text = enhancedPrompt.value.trim();
+            if (!text) {
+                showError('No enhanced prompt to copy.');
+                return;
+            }
+            try {
+                await navigator.clipboard.writeText(text);
+                copyBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                copyBtn.classList.add('success');
+                setTimeout(() => {
+                    copyBtn.innerHTML = '<i class="far fa-copy"></i> Copy';
+                    copyBtn.classList.remove('success');
+                }, 2000);
+            } catch (error) {
+                showError('Failed to copy text to clipboard.');
+            }
+        }
+        
+        function showError(message) {
+            errorText.textContent = message;
+            errorMessage.classList.add('show');
+        }
+        
+        function hideError() {
+            errorMessage.classList.remove('show');
+        }
+    </script>
+</body>
+</html>
