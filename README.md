@@ -1,320 +1,341 @@
 # xsukax Ollama AI Prompt Generator
 
-[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-[![Live Demo](https://img.shields.io/badge/demo-live-success)](https://xsukax.github.io/xsukax-Ollama-AI-Prompt-Generator)
-[![GitHub](https://img.shields.io/badge/github-xsukax-181717?logo=github)](https://github.com/xsukax/xsukax-Ollama-AI-Prompt-Generator)
+A professional, privacy-focused web application that enhances your AI prompts using locally-running Ollama models with real-time streaming capabilities.
 
-A lightweight, privacy-focused web application that enhances AI prompts using locally-running Ollama models with real-time streaming output.
+![GitHub](https://img.shields.io/github/license/xsukax/xsukax-Ollama-AI-Prompt-Generator)
+![GitHub stars](https://img.shields.io/github/stars/xsukax/xsukax-Ollama-AI-Prompt-Generator)
+![GitHub issues](https://img.shields.io/github/issues/xsukax/xsukax-Ollama-AI-Prompt-Generator)
 
-**🔗 Live Demo:** [https://xsukax.github.io/xsukax-Ollama-AI-Prompt-Generator](https://xsukax.github.io/xsukax-Ollama-AI-Prompt-Generator)
+**Live Demo:** [https://xsukax.github.io/xsukax-Ollama-AI-Prompt-Generator](https://xsukax.github.io/xsukax-Ollama-AI-Prompt-Generator)
+
+---
 
 ## 📋 Project Overview
 
-xsukax Ollama AI Prompt Generator is a single-file HTML application designed to transform basic AI prompts into sophisticated, well-engineered prompts that yield superior results from AI language models. The application leverages the Ollama API to access locally-installed AI models, providing prompt engineering expertise without requiring cloud services or external API keys.
+The **xsukax Ollama AI Prompt Generator** is a sophisticated single-page web application designed to transform casual user prompts into professional, well-structured prompts optimized for AI language models. Built as a pure client-side application, it connects seamlessly to your local Ollama installation, enabling you to leverage the power of open-source AI models for prompt engineering without sending data to external servers.
 
-Built with modern web technologies, this tool features real-time streaming output, allowing users to see enhanced prompts generated character-by-character as the AI processes their input. The application maintains a clean, GitHub-inspired interface that emphasizes usability and professional aesthetics.
+The application offers two distinct enhancement modes: a **Fast Model** mode that generates concise, clear prompts (2-4 sentences) ideal for quick iterations, and an **Advanced Model** mode that produces comprehensive, detailed prompts with structured requirements and professional formatting (8-15 sentences). With real-time streaming responses, an intuitive model selection interface, and automatic connection status monitoring, this tool streamlines the prompt engineering workflow for developers, content creators, researchers, and AI enthusiasts.
 
-**Key Characteristics:**
-- **Single-file deployment** - Entire application contained in `index.html`
-- **Local-first architecture** - Connects to Ollama running on localhost
-- **Real-time streaming** - Instant visual feedback during prompt generation
-- **Model flexibility** - Works with any Ollama-compatible model
-- **Zero dependencies** - No external libraries or frameworks required beyond Font Awesome for icons
+Whether you're crafting prompts for creative writing, technical documentation, code generation, or analytical tasks, the xsukax Ollama AI Prompt Generator ensures your instructions are clear, specific, and optimized for maximum AI model performance—all while maintaining complete control over your data through local processing.
+
+---
 
 ## 🔒 Security and Privacy Benefits
 
-This application prioritizes user privacy and security through its architecture and implementation:
+This application prioritizes user privacy and data security through a **100% local-first architecture** that ensures your sensitive prompts and creative ideas never leave your machine:
 
-### Complete Data Privacy
-- **No external data transmission** - All prompt processing occurs locally on your machine through Ollama
-- **No cloud dependencies** - Does not connect to third-party AI services or APIs
-- **No data collection** - The application stores no user data, analytics, or telemetry
-- **No authentication required** - No user accounts, passwords, or personal information needed
+**Complete Local Processing:** All prompt enhancement operations are performed entirely on your local machine using your locally-installed Ollama models. The application connects exclusively to `localhost:11434`, meaning no data is transmitted to external servers, third-party APIs, or cloud services. Your prompts, enhanced outputs, and model interactions remain private and under your complete control.
 
-### Client-Side Security
-- **Browser-based execution** - All processing happens within the user's browser environment
-- **No server-side code** - Eliminates server-side vulnerabilities and attack vectors
-- **Direct API communication** - Communicates directly with local Ollama instance (localhost:11434)
-- **CORS-safe implementation** - Properly handles cross-origin requests for local API access
+**Zero Data Collection:** The application does not collect, store, or transmit any user data, analytics, telemetry, or usage statistics. There are no tracking scripts, cookies, or external dependencies beyond the Font Awesome icon library served from a CDN for UI elements. Your prompt engineering workflow remains completely anonymous and untraceable.
 
-### Transparency and Auditability
-- **Open-source codebase** - Complete source code available for security auditing
-- **Single-file architecture** - Easy to review and verify all application logic
-- **No obfuscation** - Clear, readable JavaScript without minification or compilation
-- **No hidden network requests** - All API calls are explicit and documented in code
+**No API Keys Required:** Unlike cloud-based AI services that require API keys, authentication tokens, or account credentials, this application operates without any authentication mechanism. This eliminates risks associated with key exposure, credential leaks, or unauthorized access to your AI services.
 
-### Local Model Control
-- **User-controlled AI models** - Only uses models you've explicitly downloaded via Ollama
-- **No model telemetry** - Models run entirely offline without external connections
-- **Model version control** - Full control over which model versions are used
+**Client-Side Architecture:** Built as a single-file HTML application with embedded CSS and JavaScript, the entire codebase is transparent and auditable. There are no hidden server-side components, databases, or backend services that could potentially log or process your data. The application can even be run offline once downloaded.
+
+**Open Source Transparency:** Licensed under the GNU General Public License v3.0, the complete source code is publicly available for inspection, modification, and community auditing. This transparency ensures that security-conscious users and organizations can verify the application's behavior and confirm its privacy guarantees before deployment.
+
+**CORS-Free Local Communication:** The application communicates directly with your local Ollama instance using standard HTTP requests, eliminating the need for proxy servers or intermediary services that could intercept or log your API communications.
+
+These security features make the xsukax Ollama AI Prompt Generator particularly suitable for enterprise environments, research institutions, and privacy-conscious individuals who require complete data sovereignty while leveraging advanced AI capabilities.
+
+---
 
 ## ✨ Features and Advantages
 
-### Core Functionality
-- **Real-Time Streaming Output** - Watch enhanced prompts generate in real-time rather than waiting for completion
-- **Dynamic Model Discovery** - Automatically detects and lists all available Ollama models
-- **Intelligent Prompt Enhancement** - Leverages AI expertise to improve prompt clarity, specificity, and effectiveness
-- **One-Click Copy** - Instantly copy enhanced prompts to clipboard with visual confirmation
-- **Connection Status Monitoring** - Real-time indication of Ollama API connectivity
+**🚀 Dual Enhancement Modes**
+- **Fast Model Mode:** Generates concise, professional prompts (2-4 sentences) with clear role assignments and actionable requirements—perfect for rapid prompt iterations and quick refinements
+- **Advanced Model Mode:** Creates comprehensive, structured prompts (8-15 sentences) with detailed deliverables, quality criteria, and professional formatting using bullet points and sections
 
-### User Experience
-- **GitHub-Inspired Design** - Clean, professional interface familiar to developers
-- **Responsive Layout** - Optimized for desktop and mobile viewing
-- **Visual Streaming Indicator** - Pulsing animation shows when AI is actively generating
-- **Auto-Scrolling Output** - Enhanced prompt area automatically scrolls during streaming
-- **Error Handling** - Clear, actionable error messages for troubleshooting
+**🔄 Real-Time Streaming Responses**
+- Watch your enhanced prompts appear in real-time as the AI model generates them, with smooth streaming indicators and progress feedback
+- Instant visual feedback eliminates waiting time and provides transparency into the generation process
 
-### Technical Advantages
-- **Zero Installation** - Simply open `index.html` in any modern browser
-- **No Backend Required** - Runs entirely in the browser without server infrastructure
-- **Cross-Platform Compatibility** - Works on Windows, macOS, Linux wherever Ollama runs
-- **Lightweight Performance** - Minimal resource consumption with efficient streaming implementation
-- **Easy Customization** - Single HTML file makes modifications straightforward
+**🎯 Intelligent Model Selection**
+- Automatically detects and displays all available Ollama models installed on your system
+- Easy model switching with visual indicators showing the currently selected model
+- Displays model sizes to help you choose between speed and capability
+- Refresh functionality to instantly detect newly downloaded models
 
-### Unique Differentiators
-- **Privacy-first approach** - Unlike cloud-based prompt enhancers, all data stays local
-- **Model agnostic** - Works with any Ollama model (LLaMA, Mistral, CodeLLaMA, etc.)
-- **No API costs** - Free to use with your own Ollama installation
-- **Offline capable** - Functions without internet connection (Ollama runs locally)
-- **Streaming architecture** - Provides immediate feedback unlike batch-processing alternatives
+**📋 One-Click Copy Functionality**
+- Copy enhanced prompts to clipboard with a single click
+- Visual confirmation feedback with success indicators
+- Seamlessly integrate enhanced prompts into your workflow
 
-## 📦 Installation Instructions
+**🎨 Professional User Interface**
+- Clean, modern design inspired by GitHub's UI/UX principles
+- Fully responsive layout that adapts to desktop, tablet, and mobile devices
+- Intuitive sidebar navigation with collapsible model list
+- Color-coded mode indicators (Fast: Blue, Advanced: Purple) for quick visual reference
+
+**🔌 Connection Status Monitoring**
+- Real-time connection status indicator showing Ollama availability
+- Clear error messages with actionable troubleshooting guidance
+- Automatic connection verification on page load
+
+**⚡ Zero Configuration**
+- No installation, configuration files, or complex setup required
+- Simply open `index.html` in any modern web browser
+- Works immediately after downloading—no build process or dependencies
+
+**🌐 Universal Compatibility**
+- Pure HTML/CSS/JavaScript implementation with no framework dependencies
+- Compatible with all modern browsers (Chrome, Firefox, Safari, Edge)
+- Can be deployed as a static website, run locally, or hosted on GitHub Pages
+- Platform-independent: works on Windows, macOS, Linux, and mobile devices
+
+**🔧 Customizable Prompt Engineering**
+- Built-in prompt engineering templates optimized for two distinct use cases
+- Preserves original user intent while adding professional structure
+- Avoids introducing assumptions or fabricated information
+- Configurable temperature and sampling parameters for fine-tuned control
+
+**📦 Self-Contained Design**
+- Single-file application (`index.html`) containing all functionality
+- No external JavaScript dependencies or libraries (except Font Awesome icons for UI)
+- Easy to backup, share, and version control
+
+---
+
+## 📥 Installation Instructions
 
 ### Prerequisites
 
-1. **Ollama Installation**
-   - Download and install Ollama from [https://ollama.ai](https://ollama.ai)
-   - Supported platforms: Windows, macOS, Linux
-   - Verify installation by running `ollama --version` in terminal
+Before using the xsukax Ollama AI Prompt Generator, ensure you have the following installed:
 
-2. **Download AI Models**
-   ```bash
-   # Example: Install LLaMA 2 model
-   ollama pull llama2
-   
-   # Or install Mistral
-   ollama pull mistral
-   
-   # View installed models
-   ollama list
-   ```
+**1. Ollama Installation**
 
-3. **Modern Web Browser**
-   - Chrome 90+, Firefox 88+, Safari 14+, or Edge 90+
-   - JavaScript must be enabled
-   - Clipboard API support for copy functionality
+Download and install Ollama on your system:
+
+- **macOS and Linux:**
+  ```bash
+  curl -fsSL https://ollama.com/install.sh | sh
+  ```
+
+- **Windows:**
+  Download the installer from [https://ollama.com/download](https://ollama.com/download)
+
+**2. Download AI Models**
+
+After installing Ollama, download at least one language model. Recommended models include:
+
+```bash
+# Lightweight, fast model (recommended for Fast Mode)
+ollama pull llama3.2
+
+# More capable model (recommended for Advanced Mode)
+ollama pull llama3.1
+
+# High-performance model for best results
+ollama pull mistral
+```
+
+View all available models at [https://ollama.com/library](https://ollama.com/library)
+
+**3. Verify Ollama is Running**
+
+Ensure Ollama is running on your system:
+
+```bash
+# Check if Ollama is running
+ollama list
+
+# Start Ollama service (if not already running)
+ollama serve
+```
+
+By default, Ollama runs on `http://localhost:11434`
 
 ### Application Setup
 
-#### Method 1: Direct Download
-1. Download `index.html` from the repository
-2. Save to a location on your computer
-3. Double-click `index.html` to open in your default browser
+**Option 1: Use GitHub Pages (Recommended for Quick Start)**
 
-#### Method 2: Clone Repository
+Simply visit the live demo at:
+```
+https://xsukax.github.io/xsukax-Ollama-AI-Prompt-Generator
+```
+
+**Option 2: Clone Repository**
+
 ```bash
 # Clone the repository
 git clone https://github.com/xsukax/xsukax-Ollama-AI-Prompt-Generator.git
 
-# Navigate to directory
+# Navigate to the directory
 cd xsukax-Ollama-AI-Prompt-Generator
 
-# Open in browser (example for different platforms)
-# Windows
-start index.html
-
-# macOS
+# Open index.html in your browser
+# On macOS:
 open index.html
-
-# Linux
+# On Linux:
 xdg-open index.html
+# On Windows:
+start index.html
 ```
 
-#### Method 3: Use Live Demo
-- Visit [https://xsukax.github.io/xsukax-Ollama-AI-Prompt-Generator](https://xsukax.github.io/xsukax-Ollama-AI-Prompt-Generator)
-- Requires Ollama running locally (see CORS configuration below)
+**Option 3: Download Standalone File**
 
-### Ollama Configuration
+1. Download `index.html` from the repository
+2. Save it to your preferred location
+3. Double-click to open in your default browser
 
-#### Starting Ollama Service
-```bash
-# Start Ollama (runs on localhost:11434 by default)
-ollama serve
-```
+**No Additional Configuration Required!** The application will automatically connect to your local Ollama instance at `http://localhost:11434`.
 
-#### CORS Configuration (For Live Demo Access)
-If using the GitHub Pages demo, configure Ollama to accept browser requests:
-
-**On macOS/Linux:**
-```bash
-# Set environment variable for CORS
-export OLLAMA_ORIGINS="https://xsukax.github.io"
-ollama serve
-```
-
-**On Windows (PowerShell):**
-```powershell
-$env:OLLAMA_ORIGINS="https://xsukax.github.io"
-ollama serve
-```
-
-**On Windows (Command Prompt):**
-```cmd
-set OLLAMA_ORIGINS=https://xsukax.github.io
-ollama serve
-```
-
-### No PHP Configuration Required
-
-This application is a **client-side only** HTML/JavaScript application and does not require PHP or server-side configuration. All processing occurs in the browser, connecting directly to your local Ollama instance. No `php.ini` modifications or PHP installation is necessary.
-
-### Verification
-
-1. Ensure Ollama is running: `curl http://localhost:11434/api/tags`
-2. Open the application in your browser
-3. Check the status indicator shows "Connected to Ollama" (green dot)
-4. Verify models appear in the sidebar
+---
 
 ## 📖 Usage Guide
 
 ### Basic Workflow
 
+The xsukax Ollama AI Prompt Generator follows a simple three-step process to enhance your prompts:
+
 ```mermaid
-graph LR
-    A[Start Ollama] --> B[Open Application]
-    B --> C[Select Model]
-    C --> D[Enter Prompt]
-    D --> E[Click Enhance]
-    E --> F[Watch Stream]
-    F --> G[Copy Result]
-    G --> H{Need More?}
-    H -->|Yes| D
-    H -->|No| I[Complete]
+flowchart TD
+    A[User enters original prompt] --> B{Select Enhancement Mode}
+    B -->|Fast Model| C[Generate concise prompt<br/>2-4 sentences]
+    B -->|Advanced Model| D[Generate detailed prompt<br/>8-15 sentences]
+    C --> E[Stream response in real-time]
+    D --> E
+    E --> F[Display enhanced prompt]
+    F --> G[Copy to clipboard]
+    G --> H[Use in AI applications]
 ```
 
 ### Step-by-Step Instructions
 
-#### 1. Launch Ollama Service
+**Step 1: Ensure Ollama is Running**
+
+Before using the application, verify that Ollama is running locally:
+
 ```bash
-# In terminal/command prompt
+# Verify Ollama is active
+ollama list
+```
+
+You should see a list of your installed models. If not, start Ollama:
+
+```bash
 ollama serve
 ```
-Keep this terminal window open while using the application.
 
-#### 2. Open the Application
-- Double-click `index.html` or visit the live demo
-- Verify connection status shows green indicator
+**Step 2: Open the Application**
 
-#### 3. Select an AI Model
-- View available models in the left sidebar
-- Click on any model to select it (highlighted in blue)
-- Models display their size for reference
-- Use "Refresh Models" button if newly downloaded models don't appear
+Open `index.html` in your web browser. You should see a green "Connected to Ollama" indicator in the top-right corner. If you see a red indicator, check that Ollama is running on port 11434.
 
-#### 4. Enter Your Original Prompt
-- Type or paste your prompt in the "Original Prompt" textarea
-- Example: `Write a story about a robot learning to paint`
-- No length restrictions, but concise prompts work best
+**Step 3: Select a Model**
 
-#### 5. Generate Enhanced Prompt
-- Click the "Enhance Prompt" button
-- Watch real-time streaming in the "Enhanced Prompt" section
-- Pulsing indicator shows active generation
-- Text auto-scrolls as it generates
+In the left sidebar under "Available Models," click on your preferred model. The selected model will be highlighted in blue. Recommended model selection:
 
-#### 6. Copy Enhanced Prompt
-- Click the "Copy" button (top-right of Enhanced Prompt section)
-- Visual confirmation shows "Copied!" with green checkmark
-- Use enhanced prompt in your preferred AI tool
+- For **Fast Mode:** Use smaller models (e.g., `llama3.2`, `phi3`)
+- For **Advanced Mode:** Use larger models (e.g., `llama3.1`, `mistral`, `mixtral`)
+
+**Step 4: Enter Your Original Prompt**
+
+In the "Original Prompt" text area, enter the prompt you want to enhance. Examples:
+
+- *"Write a story about a robot learning to paint"*
+- *"Explain quantum computing"*
+- *"Create a business plan for a coffee shop"*
+- *"Debug this Python code"*
+
+**Step 5: Choose Enhancement Mode**
+
+Click one of the two enhancement buttons:
+
+- **Fast Model:** For quick, concise enhancements (2-4 sentences)
+- **Advanced Model:** For comprehensive, detailed prompts with structure
+
+**Step 6: Watch Real-Time Generation**
+
+The application will stream the enhanced prompt in real-time. You'll see:
+- A "Streaming response..." indicator with an animated dot
+- The enhanced text appearing progressively in the output area
+- A mode indicator (Fast/Advanced) showing which enhancement was used
+
+**Step 7: Copy and Use**
+
+Once generation is complete, click the **Copy** button to copy the enhanced prompt to your clipboard. The button will briefly show "Copied!" to confirm success.
 
 ### Application Architecture
 
 ```mermaid
-flowchart TD
-    subgraph Browser["Browser Environment"]
-        A[index.html] --> B[JavaScript Engine]
-        B --> C[Fetch API]
-    end
+graph LR
+    A[Browser UI<br/>index.html] -->|HTTP Request| B[Ollama API<br/>localhost:11434]
+    B -->|Stream Response| A
+    A -->|Display| C[User]
+    D[Local AI Models] -->|Process| B
     
-    subgraph Local["Local Machine"]
-        C -->|HTTP Request| D[Ollama API :11434]
-        D --> E[AI Model]
-        E -->|Streaming Response| D
-        D -->|JSON Chunks| C
-    end
-    
-    C --> F[Stream Parser]
-    F --> G[UI Update]
-    G --> H[Real-time Display]
-    
-    style Browser fill:#e1f5ff
-    style Local fill:#fff4e1
-    style D fill:#2da44e,color:#fff
+    style A fill:#ddf4ff
+    style B fill:#dafbe1
+    style D fill:#fbefff
 ```
 
-### Streaming Process Flow
+### System Communication Flow
 
 ```mermaid
 sequenceDiagram
     participant User
-    participant App as Application
-    participant Ollama as Ollama API
-    participant Model as AI Model
+    participant Browser
+    participant Ollama API
+    participant AI Model
+
+    User->>Browser: Enter prompt + Click Fast/Advanced
+    Browser->>Ollama API: POST /api/generate<br/>{model, prompt, stream: true}
+    Ollama API->>AI Model: Process prompt engineering request
     
-    User->>App: Enter prompt & click Enhance
-    App->>App: Validate input & selected model
-    App->>Ollama: POST /api/generate (stream: true)
-    Ollama->>Model: Process prompt
-    
-    loop Streaming Response
-        Model->>Ollama: Generate token
-        Ollama->>App: Send JSON chunk
-        App->>User: Display character(s)
+    loop Real-time Streaming
+        AI Model->>Ollama API: Generate token
+        Ollama API->>Browser: Stream JSON chunk
+        Browser->>User: Display progressive update
     end
     
-    Model->>Ollama: Generation complete
-    Ollama->>App: done: true
-    App->>User: Show copy button
+    AI Model->>Ollama API: Generation complete
+    Ollama API->>Browser: Final response
+    Browser->>User: Enable copy button
+    User->>Browser: Click Copy
+    Browser->>User: Prompt copied to clipboard
 ```
 
-### Advanced Usage
+### Understanding Enhancement Modes
 
-#### Switching Models
-Different models excel at different tasks:
-- **llama2** - General purpose, balanced performance
-- **mistral** - Strong reasoning and instruction following
-- **codellama** - Optimized for code and technical prompts
-- **neural-chat** - Conversational and creative tasks
+**Fast Model Enhancement:**
+- **Purpose:** Quick, concise prompt refinement
+- **Output Length:** 2-4 sentences
+- **Structure:** Role assignment + clear request + specific requirements
+- **Best For:** Rapid iterations, simple tasks, when you need immediate results
+- **Example Input:** *"Write a story about a robot"*
+- **Example Output:** *"You are an experienced creative writer with expertise in science fiction and character development. Write a short story (500-800 words) about a sentient robot discovering artistic expression and the emotional journey of learning to create. Focus on vivid descriptions of the robot's internal processing and the transformative moments in its creative awakening."*
 
-#### Iterative Refinement
-1. Generate initial enhanced prompt
-2. Use enhanced prompt as new input
-3. Click "Enhance Prompt" again for further refinement
-4. Repeat until desired quality achieved
+**Advanced Model Enhancement:**
+- **Purpose:** Comprehensive, professional prompt creation
+- **Output Length:** 8-15 sentences with structured sections
+- **Structure:** Role + context + detailed requirements (bullet points) + quality criteria + deliverables
+- **Best For:** Complex tasks, professional projects, detailed analysis, when precision matters
+- **Example Input:** *"Write a story about a robot"*
+- **Example Output:** A multi-paragraph prompt with role assignment, detailed story requirements, character development guidelines, structural expectations, quality criteria, and deliverable specifications
 
-#### Troubleshooting Common Issues
+### Troubleshooting Common Issues
 
-| Issue | Solution |
-|-------|----------|
-| Red status indicator | Ensure Ollama is running: `ollama serve` |
-| No models listed | Download models: `ollama pull llama2` |
-| CORS errors (demo) | Set `OLLAMA_ORIGINS` environment variable |
-| Slow generation | Try smaller models or adjust temperature |
-| Empty response | Check model is fully downloaded: `ollama list` |
+**Issue: "Cannot connect to Ollama API"**
+- **Solution:** Ensure Ollama is running with `ollama serve`
+- Verify Ollama is using default port 11434
+- Check firewall settings aren't blocking localhost connections
 
-### Keyboard Shortcuts
+**Issue: "No models found"**
+- **Solution:** Download models using `ollama pull <model_name>`
+- Click "Refresh Models" button after downloading
+- Verify models are listed with `ollama list` in terminal
 
-- **Ctrl/Cmd + V** - Paste prompt into textarea
-- **Ctrl/Cmd + C** - Copy from enhanced prompt (must focus textarea first)
-- **Enter** - Does not submit (prevents accidental generation)
+**Issue: "No response received from the model"**
+- **Solution:** Check that the selected model is fully downloaded
+- Try a different model from the sidebar
+- Restart Ollama service
 
-### Best Practices
+**Issue: Slow response times**
+- **Solution:** Use smaller models for Fast Mode (e.g., `llama3.2`)
+- Ensure your system has adequate RAM (8GB+ recommended)
+- Close other resource-intensive applications
 
-1. **Be specific in original prompts** - More context yields better enhancements
-2. **Experiment with models** - Different models produce different enhancement styles
-3. **Review before use** - Enhanced prompts are suggestions, not guarantees
-4. **Save your favorites** - Copy exceptional results for future reference
-5. **Iterate strategically** - Sometimes 2-3 enhancement passes produce optimal results
+---
 
 ## 📄 License
 
@@ -322,4 +343,27 @@ This project is licensed under the GNU General Public License v3.0.
 
 ---
 
-**Built with ❤️ by xsukax** | [GitHub](https://github.com/xsukax) | [Report Issues](https://github.com/xsukax/xsukax-Ollama-AI-Prompt-Generator/issues)
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
+
+---
+
+## 🙏 Acknowledgments
+
+- Built with [Ollama](https://ollama.com/) - Run large language models locally
+- Icons provided by [Font Awesome](https://fontawesome.com/)
+- Inspired by modern prompt engineering best practices
+
+---
+
+## 📞 Support
+
+If you encounter any issues or have questions:
+
+- **GitHub Issues:** [https://github.com/xsukax/xsukax-Ollama-AI-Prompt-Generator/issues](https://github.com/xsukax/xsukax-Ollama-AI-Prompt-Generator/issues)
+- **Ollama Documentation:** [https://github.com/ollama/ollama](https://github.com/ollama/ollama)
+
+---
+
+**Made with ❤️ for the open-source community**
