@@ -3,31 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>xsukax Ollama AI Prompt Generator</title>
+    <title>xsukax AI Prompt Generator</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif; }
-        :root { --primary-color: #2da44e; --primary-dark: #2c974b; --text-color: #24292f; --border-color: #d0d7de; --bg-color: #ffffff; --card-bg: #f6f8fa; --sidebar-bg: #f6f8fa; --hover-bg: #f3f4f6; --shadow: 0 3px 6px rgba(140, 149, 159, 0.15); --radius: 6px; --fast-color: #0969da; --advanced-color: #8250df; }
+        :root { --primary-color: #2da44e; --primary-dark: #2c974b; --text-color: #24292f; --border-color: #d0d7de; --bg-color: #ffffff; --card-bg: #f6f8fa; --sidebar-bg: #f6f8fa; --hover-bg: #f3f4f6; --shadow: 0 3px 6px rgba(140, 149, 159, 0.15); --radius: 6px; --fast-color: #0969da; --advanced-color: #8250df; --ollama-color: #000000; --openai-color: #10a37f; }
         body { background-color: #fafbfc; color: var(--text-color); line-height: 1.5; min-height: 100vh; padding: 20px; }
-        .container { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 280px 1fr; gap: 24px; }
+        .container { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 320px 1fr; gap: 24px; }
         header { grid-column: 1 / -1; padding: 20px 0; margin-bottom: 10px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
         .logo { display: flex; align-items: center; gap: 12px; }
-        .logo-icon { background-color: var(--primary-color); color: white; width: 40px; height: 40px; border-radius: var(--radius); display: flex; align-items: center; justify-content: center; font-size: 20px; }
+        .logo-icon { background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%); color: white; width: 40px; height: 40px; border-radius: var(--radius); display: flex; align-items: center; justify-content: center; font-size: 20px; }
         .logo-text h1 { font-size: 24px; font-weight: 600; }
         .logo-text p { font-size: 14px; color: #57606a; }
-        .api-status { display: flex; align-items: center; gap: 8px; font-size: 14px; padding: 6px 12px; border-radius: var(--radius); background-color: var(--card-bg); border: 1px solid var(--border-color); }
+        .api-status-group { display: flex; flex-direction: column; gap: 8px; }
+        .api-status { display: flex; align-items: center; gap: 8px; font-size: 13px; padding: 6px 12px; border-radius: var(--radius); background-color: var(--card-bg); border: 1px solid var(--border-color); }
         .status-dot { width: 10px; height: 10px; border-radius: 50%; background-color: #e34c26; }
         .status-dot.connected { background-color: var(--primary-color); }
+        .status-dot.checking { background-color: #ffa657; animation: pulse 1.5s ease-in-out infinite; }
         .sidebar { background-color: var(--sidebar-bg); border-radius: var(--radius); border: 1px solid var(--border-color); padding: 20px; height: fit-content; }
         .sidebar h2 { font-size: 18px; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+        .provider-section { margin-bottom: 24px; padding: 16px; background-color: var(--bg-color); border-radius: var(--radius); border: 1px solid var(--border-color); }
+        .provider-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; cursor: pointer; user-select: none; }
+        .provider-title { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 15px; }
+        .provider-badge { font-size: 11px; padding: 2px 8px; border-radius: 3px; font-weight: 600; margin-left: 8px; }
+        .provider-badge.ollama { background-color: #e5e7eb; color: var(--ollama-color); }
+        .provider-badge.openai { background-color: #d1fae5; color: var(--openai-color); }
+        .provider-status { display: flex; align-items: center; gap: 6px; font-size: 12px; }
+        .toggle-config { background: none; border: none; color: var(--text-color); cursor: pointer; font-size: 14px; padding: 4px; transition: transform 0.2s ease; }
+        .toggle-config:hover { color: var(--primary-color); }
+        .toggle-config.expanded { transform: rotate(180deg); }
+        .provider-config { display: none; margin-top: 12px; }
+        .provider-config.show { display: block; }
+        .config-input-group { margin-bottom: 12px; }
+        .config-input-group label { display: block; font-size: 12px; font-weight: 500; color: #57606a; margin-bottom: 6px; }
+        .config-input-group input { width: 100%; padding: 8px 10px; border: 1px solid var(--border-color); border-radius: var(--radius); font-size: 14px; transition: border-color 0.2s ease; }
+        .config-input-group input:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(45, 164, 78, 0.1); }
+        .config-input-group .hint { font-size: 11px; color: #57606a; margin-top: 4px; line-height: 1.4; }
+        .endpoint-presets { display: flex; gap: 6px; margin-bottom: 8px; flex-wrap: wrap; }
+        .preset-btn { padding: 4px 8px; font-size: 11px; background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 4px; cursor: pointer; transition: all 0.2s ease; }
+        .preset-btn:hover { background-color: var(--hover-bg); border-color: var(--primary-color); }
+        .connect-btn { width: 100%; padding: 10px; background-color: var(--primary-color); color: white; border: none; border-radius: var(--radius); font-weight: 500; cursor: pointer; transition: background-color 0.2s ease; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .connect-btn:hover { background-color: var(--primary-dark); }
+        .connect-btn:disabled { background-color: #94d3a2; cursor: not-allowed; }
         .model-list { list-style: none; margin-bottom: 20px; max-height: 300px; overflow-y: auto; }
         .model-item { padding: 10px 12px; border-radius: var(--radius); margin-bottom: 8px; border: 1px solid transparent; cursor: pointer; transition: all 0.2s ease; display: flex; justify-content: space-between; align-items: center; }
         .model-item:hover { background-color: var(--hover-bg); border-color: var(--border-color); }
         .model-item.active { background-color: #ddf4ff; border-color: #84d8ff; color: #0969da; }
-        .model-name { font-weight: 500; }
-        .model-size { font-size: 12px; color: #57606a; }
+        .model-item.disabled { opacity: 0.5; cursor: not-allowed; }
+        .model-name { font-weight: 500; word-break: break-word; }
+        .model-size { font-size: 12px; color: #57606a; white-space: nowrap; }
         .refresh-btn { width: 100%; padding: 10px; background-color: var(--bg-color); border: 1px solid var(--border-color); border-radius: var(--radius); color: var(--text-color); font-weight: 500; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; gap: 8px; }
         .refresh-btn:hover { background-color: var(--hover-bg); }
+        .refresh-btn:disabled { opacity: 0.5; cursor: not-allowed; }
         .main-content { display: flex; flex-direction: column; gap: 20px; }
         .card { background-color: var(--bg-color); border-radius: var(--radius); border: 1px solid var(--border-color); box-shadow: var(--shadow); padding: 24px; }
         .card h2 { font-size: 20px; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
@@ -52,9 +79,6 @@
         .copy-btn { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 6px 12px; font-size: 14px; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; gap: 6px; }
         .copy-btn:hover { background-color: var(--hover-bg); }
         .copy-btn.success { background-color: #dafbe1; border-color: #4ac26b; color: #1a7f37; }
-        .loading { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 0; }
-        .spinner { width: 40px; height: 40px; border: 3px solid rgba(45, 164, 78, 0.2); border-radius: 50%; border-top-color: var(--primary-color); animation: spin 1s ease-in-out infinite; margin-bottom: 16px; }
-        @keyframes spin { to { transform: rotate(360deg); } }
         .streaming-indicator { display: none; align-items: center; gap: 8px; font-size: 14px; color: var(--primary-color); margin-bottom: 8px; }
         .streaming-indicator.active { display: flex; }
         .streaming-dot { width: 8px; height: 8px; background-color: var(--primary-color); border-radius: 50%; animation: pulse 1.5s ease-in-out infinite; }
@@ -65,7 +89,12 @@
         .instructions li { margin-bottom: 6px; }
         .error-message { background-color: #ffebe9; border: 1px solid #ff8182; border-radius: var(--radius); padding: 16px; margin-top: 20px; color: #cf222e; display: none; }
         .error-message.show { display: block; }
+        .success-message { background-color: #dafbe1; border: 1px solid #4ac26b; border-radius: var(--radius); padding: 16px; margin-top: 12px; color: #1a7f37; display: none; }
+        .success-message.show { display: block; }
         footer { grid-column: 1 / -1; margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--border-color); text-align: center; color: #57606a; font-size: 14px; }
+        .footer-links { margin-top: 8px; }
+        .footer-links a { color: #0969da; text-decoration: none; margin: 0 8px; }
+        .footer-links a:hover { text-decoration: underline; }
         @media (max-width: 768px) { .container { grid-template-columns: 1fr; } header { flex-direction: column; gap: 16px; align-items: flex-start; } .model-list { max-height: 200px; } .button-group { grid-template-columns: 1fr; } }
     </style>
 </head>
@@ -75,22 +104,100 @@
             <div class="logo">
                 <div class="logo-icon"><i class="fas fa-robot"></i></div>
                 <div class="logo-text">
-                    <h1>xsukax Ollama AI Prompt Generator</h1>
-                    <p>Enhance your AI prompts with expert engineering</p>
+                    <h1>xsukax AI Prompt Generator</h1>
+                    <p>Universal AI Prompt Engineering Tool</p>
                 </div>
             </div>
-            <div class="api-status">
-                <div class="status-dot" id="statusDot"></div>
-                <span id="statusText">Connecting to Ollama...</span>
+            <div class="api-status-group">
+                <div class="api-status">
+                    <div class="status-dot checking" id="ollamaStatusDot"></div>
+                    <span id="ollamaStatusText">Checking Ollama...</span>
+                </div>
+                <div class="api-status">
+                    <div class="status-dot checking" id="openaiStatusDot"></div>
+                    <span id="openaiStatusText">Checking OpenAI...</span>
+                </div>
             </div>
         </header>
 
         <aside class="sidebar">
+            <h2><i class="fas fa-cog card-icon"></i> API Configuration</h2>
+            
+            <div class="provider-section">
+                <div class="provider-header" id="ollamaHeader">
+                    <div class="provider-title">
+                        <i class="fas fa-server"></i>
+                        Ollama API
+                        <span class="provider-badge ollama">OLLAMA</span>
+                    </div>
+                    <button class="toggle-config" id="ollamaToggle">
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                </div>
+                <div class="provider-status">
+                    <div class="status-dot" id="ollamaSideStatus"></div>
+                    <span id="ollamaSideText">Not configured</span>
+                </div>
+                <div class="provider-config" id="ollamaConfig">
+                    <div class="config-input-group">
+                        <label for="ollamaEndpoint">API Endpoint</label>
+                        <input type="text" id="ollamaEndpoint" placeholder="http://localhost:11434" value="http://localhost:11434">
+                        <div class="hint">Default Ollama endpoint</div>
+                    </div>
+                    <button class="connect-btn" id="ollamaConnect">
+                        <i class="fas fa-plug"></i> Connect to Ollama
+                    </button>
+                </div>
+            </div>
+
+            <div class="provider-section">
+                <div class="provider-header" id="openaiHeader">
+                    <div class="provider-title">
+                        <i class="fas fa-cloud"></i>
+                        OpenAI-Compatible API
+                        <span class="provider-badge openai">OPENAI</span>
+                    </div>
+                    <button class="toggle-config" id="openaiToggle">
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                </div>
+                <div class="provider-status">
+                    <div class="status-dot" id="openaiSideStatus"></div>
+                    <span id="openaiSideText">Not configured</span>
+                </div>
+                <div class="provider-config" id="openaiConfig">
+                    <div class="config-input-group">
+                        <label for="openaiEndpoint">API Endpoint</label>
+                        <div class="endpoint-presets">
+                            <button class="preset-btn" onclick="setOpenAIPreset('https://api.openai.com/v1')">OpenAI</button>
+                            <button class="preset-btn" onclick="setOpenAIPreset('http://localhost:1234/v1')">LM Studio</button>
+                            <button class="preset-btn" onclick="setOpenAIPreset('http://localhost:8080/v1')">LocalAI</button>
+                        </div>
+                        <input type="text" id="openaiEndpoint" placeholder="http://localhost:1234/v1" value="https://api.openai.com/v1">
+                        <div class="hint">
+                            <strong>Cloud:</strong> https://api.openai.com/v1<br>
+                            <strong>LM Studio:</strong> http://localhost:1234/v1<br>
+                            <strong>LocalAI:</strong> http://localhost:8080/v1
+                        </div>
+                    </div>
+                    <div class="config-input-group">
+                        <label for="openaiApiKey">API Key (Optional for local)</label>
+                        <input type="password" id="openaiApiKey" placeholder="sk-... (leave empty for local servers)">
+                        <div class="hint">Required only for cloud OpenAI, not needed for LM Studio or local servers</div>
+                    </div>
+                    <button class="connect-btn" id="openaiConnect">
+                        <i class="fas fa-plug"></i> Connect to API
+                    </button>
+                </div>
+            </div>
+
             <h2><i class="fas fa-database card-icon"></i> Available Models</h2>
             <ul class="model-list" id="modelList">
-                <li class="model-item"><span class="model-name">Loading models...</span></li>
+                <li class="model-item disabled"><span class="model-name">Connect to a provider first...</span></li>
             </ul>
-            <button class="refresh-btn" id="refreshModels"><i class="fas fa-sync-alt"></i> Refresh Models</button>
+            <button class="refresh-btn" id="refreshModels" disabled>
+                <i class="fas fa-sync-alt"></i> Refresh Models
+            </button>
         </aside>
 
         <main class="main-content">
@@ -101,20 +208,25 @@
                     <textarea id="originalPrompt" class="textarea-control" placeholder="Example: Write a story about a robot learning to paint..." rows="6"></textarea>
                 </div>
                 <div class="button-group">
-                    <button class="btn-fast" id="fastBtn">
-                        <i class="fas fa-bolt"></i> Fast Model
+                    <button class="btn-fast" id="fastBtn" disabled>
+                        <i class="fas fa-bolt"></i> Fast Mode
                     </button>
-                    <button class="btn-advanced" id="advancedBtn">
-                        <i class="fas fa-brain"></i> Advanced Model
+                    <button class="btn-advanced" id="advancedBtn" disabled>
+                        <i class="fas fa-brain"></i> Advanced Mode
                     </button>
                 </div>
                 <div class="instructions">
                     <h3><i class="fas fa-lightbulb"></i> How it works</h3>
                     <ul>
-                        <li><strong>Fast Model:</strong> Generates concise, clear prompts (2-4 sentences) - perfect for quick enhancements</li>
-                        <li><strong>Advanced Model:</strong> Creates detailed, professional prompts with comprehensive structure and requirements</li>
-                        <li>Select a model from the sidebar, enter your prompt, and choose your enhancement style</li>
+                        <li><strong>Universal Support:</strong> Works with Ollama, OpenAI, LM Studio, LocalAI, and any OpenAI-compatible API</li>
+                        <li><strong>Fast Mode:</strong> Concise, clear prompts (2-4 sentences) for quick tasks</li>
+                        <li><strong>Advanced Mode:</strong> Detailed, structured prompts with comprehensive requirements</li>
+                        <li><strong>No Key Needed:</strong> Local servers like LM Studio work without API keys</li>
                     </ul>
+                </div>
+                <div class="success-message" id="successMessage">
+                    <strong><i class="fas fa-check-circle"></i> Success:</strong> 
+                    <span id="successText"></span>
                 </div>
                 <div class="error-message" id="errorMessage">
                     <strong><i class="fas fa-exclamation-triangle"></i> Error:</strong> 
@@ -146,142 +258,456 @@
         </main>
 
         <footer>
-            <p>xsukax Ollama AI Prompt Generator | Built with Ollama API | Real-time Streaming Edition</p>
+            <p>xsukax AI Prompt Generator | GPL-3.0 License | Built by xsukax</p>
+            <div class="footer-links">
+                <a href="https://github.com/xsukax" target="_blank">GitHub</a>
+                <a href="#" onclick="alert('Universal AI prompt engineering tool - Works with Ollama, OpenAI, LM Studio, LocalAI, and any OpenAI-compatible API'); return false;">About</a>
+            </div>
         </footer>
     </div>
 
     <script>
-        const OLLAMA_BASE_URL = 'http://localhost:11434';
-        
-        const modelList = document.getElementById('modelList');
-        const refreshModelsBtn = document.getElementById('refreshModels');
-        const originalPrompt = document.getElementById('originalPrompt');
-        const fastBtn = document.getElementById('fastBtn');
-        const advancedBtn = document.getElementById('advancedBtn');
-        const enhancedPrompt = document.getElementById('enhancedPrompt');
-        const copyBtn = document.getElementById('copyBtn');
-        const streamingIndicator = document.getElementById('streamingIndicator');
-        const errorMessage = document.getElementById('errorMessage');
-        const errorText = document.getElementById('errorText');
-        const statusDot = document.getElementById('statusDot');
-        const statusText = document.getElementById('statusText');
-        const modelIndicator = document.getElementById('modelIndicator');
-        const modelType = document.getElementById('modelType');
-        
-        let models = [];
-        let selectedModel = null;
-        let isGenerating = false;
-        let abortController = null;
-        
-        document.addEventListener('DOMContentLoaded', () => {
-            checkOllamaConnection();
-            loadModels();
-            refreshModelsBtn.addEventListener('click', loadModels);
-            fastBtn.addEventListener('click', () => enhancePrompt('fast'));
-            advancedBtn.addEventListener('click', () => enhancePrompt('advanced'));
-            copyBtn.addEventListener('click', copyEnhancedPrompt);
-            originalPrompt.value = "Write a story about a robot learning to paint";
-        });
-        
-        async function checkOllamaConnection() {
-            try {
-                const response = await fetch(`${OLLAMA_BASE_URL}/api/tags`, { method: 'GET', headers: { 'Content-Type': 'application/json' } });
-                if (response.ok) {
-                    statusDot.classList.add('connected');
-                    statusText.textContent = 'Connected to Ollama';
-                } else {
-                    statusText.textContent = 'Ollama not responding';
+        // Application State
+        const state = {
+            providers: {
+                ollama: {
+                    name: 'Ollama',
+                    endpoint: 'http://localhost:11434',
+                    connected: false,
+                    models: []
+                },
+                openai: {
+                    name: 'OpenAI-Compatible',
+                    endpoint: 'https://api.openai.com/v1',
+                    apiKey: '',
+                    connected: false,
+                    models: []
                 }
-            } catch (error) {
-                statusText.textContent = 'Cannot connect to Ollama';
-                showError('Cannot connect to Ollama API. Please ensure Ollama is running locally on port 11434.');
+            },
+            activeProvider: null,
+            selectedModel: null,
+            isGenerating: false,
+            abortController: null
+        };
+
+        // DOM Elements
+        const elements = {
+            ollamaEndpoint: document.getElementById('ollamaEndpoint'),
+            openaiEndpoint: document.getElementById('openaiEndpoint'),
+            openaiApiKey: document.getElementById('openaiApiKey'),
+            ollamaConnect: document.getElementById('ollamaConnect'),
+            openaiConnect: document.getElementById('openaiConnect'),
+            ollamaStatusDot: document.getElementById('ollamaStatusDot'),
+            openaiStatusDot: document.getElementById('openaiStatusDot'),
+            ollamaStatusText: document.getElementById('ollamaStatusText'),
+            openaiStatusText: document.getElementById('openaiStatusText'),
+            ollamaSideStatus: document.getElementById('ollamaSideStatus'),
+            openaiSideStatus: document.getElementById('openaiSideStatus'),
+            ollamaSideText: document.getElementById('ollamaSideText'),
+            openaiSideText: document.getElementById('openaiSideText'),
+            ollamaHeader: document.getElementById('ollamaHeader'),
+            openaiHeader: document.getElementById('openaiHeader'),
+            ollamaToggle: document.getElementById('ollamaToggle'),
+            openaiToggle: document.getElementById('openaiToggle'),
+            ollamaConfig: document.getElementById('ollamaConfig'),
+            openaiConfig: document.getElementById('openaiConfig'),
+            modelList: document.getElementById('modelList'),
+            refreshModels: document.getElementById('refreshModels'),
+            originalPrompt: document.getElementById('originalPrompt'),
+            fastBtn: document.getElementById('fastBtn'),
+            advancedBtn: document.getElementById('advancedBtn'),
+            enhancedPrompt: document.getElementById('enhancedPrompt'),
+            copyBtn: document.getElementById('copyBtn'),
+            streamingIndicator: document.getElementById('streamingIndicator'),
+            errorMessage: document.getElementById('errorMessage'),
+            errorText: document.getElementById('errorText'),
+            successMessage: document.getElementById('successMessage'),
+            successText: document.getElementById('successText'),
+            modelIndicator: document.getElementById('modelIndicator'),
+            modelType: document.getElementById('modelType')
+        };
+
+        // Global function for preset buttons
+        window.setOpenAIPreset = function(url) {
+            elements.openaiEndpoint.value = url;
+            if (url === 'https://api.openai.com/v1') {
+                elements.openaiApiKey.placeholder = 'sk-... (required for cloud)';
+            } else {
+                elements.openaiApiKey.placeholder = 'Not needed for local servers';
+                elements.openaiApiKey.value = '';
+            }
+        };
+
+        // Initialize Application
+        document.addEventListener('DOMContentLoaded', () => {
+            loadSavedConfig();
+            initializeApp();
+            setupEventListeners();
+            elements.originalPrompt.value = "Write a story about a robot learning to paint";
+        });
+
+        function loadSavedConfig() {
+            const savedOllamaEndpoint = localStorage.getItem('ollama_endpoint');
+            const savedOpenaiEndpoint = localStorage.getItem('openai_endpoint');
+            const savedOpenaiKey = sessionStorage.getItem('openai_api_key');
+
+            if (savedOllamaEndpoint) {
+                elements.ollamaEndpoint.value = savedOllamaEndpoint;
+                state.providers.ollama.endpoint = savedOllamaEndpoint;
+            }
+
+            if (savedOpenaiEndpoint) {
+                elements.openaiEndpoint.value = savedOpenaiEndpoint;
+                state.providers.openai.endpoint = savedOpenaiEndpoint;
+            }
+
+            if (savedOpenaiKey) {
+                elements.openaiApiKey.value = savedOpenaiKey;
+                state.providers.openai.apiKey = savedOpenaiKey;
             }
         }
-        
-        async function loadModels() {
+
+        async function initializeApp() {
+            await checkAllConnections();
+        }
+
+        function setupEventListeners() {
+            elements.ollamaHeader.addEventListener('click', () => toggleConfig('ollama'));
+            elements.openaiHeader.addEventListener('click', () => toggleConfig('openai'));
+            elements.ollamaConnect.addEventListener('click', () => connectToProvider('ollama'));
+            elements.openaiConnect.addEventListener('click', () => connectToProvider('openai'));
+            elements.refreshModels.addEventListener('click', loadModels);
+            elements.fastBtn.addEventListener('click', () => enhancePrompt('fast'));
+            elements.advancedBtn.addEventListener('click', () => enhancePrompt('advanced'));
+            elements.copyBtn.addEventListener('click', copyEnhancedPrompt);
+        }
+
+        function toggleConfig(provider) {
+            const config = provider === 'ollama' ? elements.ollamaConfig : elements.openaiConfig;
+            const toggle = provider === 'ollama' ? elements.ollamaToggle : elements.openaiToggle;
+            
+            config.classList.toggle('show');
+            toggle.classList.toggle('expanded');
+        }
+
+        async function checkAllConnections() {
+            const ollamaResult = await checkProviderConnection('ollama');
+            const openaiResult = await checkProviderConnection('openai');
+
+            if (ollamaResult) {
+                showSuccess('Ollama connected automatically');
+                selectProvider('ollama');
+            } else if (openaiResult) {
+                showSuccess('OpenAI-compatible API connected automatically');
+                selectProvider('openai');
+            } else {
+                showError('No providers connected. Please configure endpoints below.');
+                elements.ollamaConfig.classList.add('show');
+                elements.ollamaToggle.classList.add('expanded');
+            }
+        }
+
+        async function checkProviderConnection(provider) {
+            const config = state.providers[provider];
+            updateStatus(provider, 'checking', 'Checking...');
+
             try {
-                refreshModelsBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
-                refreshModelsBtn.disabled = true;
-                const response = await fetch(`${OLLAMA_BASE_URL}/api/tags`);
-                if (!response.ok) throw new Error(`Failed to fetch models: ${response.status}`);
-                const data = await response.json();
-                models = data.models || [];
-                if (models.length === 0) throw new Error('No models found. Please download models in Ollama first.');
-                renderModelList();
-                if (models.length > 0 && !selectedModel) {
-                    selectedModel = models[0].name;
-                    updateSelectedModel();
+                if (provider === 'ollama') {
+                    return await checkOllamaConnection();
+                } else {
+                    return await checkOpenAIConnection();
                 }
+            } catch (error) {
+                updateStatus(provider, 'disconnected', 'Not connected');
+                return false;
+            }
+        }
+
+        async function checkOllamaConnection() {
+            try {
+                const response = await fetch(`${state.providers.ollama.endpoint}/api/tags`, {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                if (response.ok) {
+                    state.providers.ollama.connected = true;
+                    updateStatus('ollama', 'connected', 'Connected');
+                    return true;
+                }
+            } catch (error) {
+                console.error('Ollama connection failed:', error);
+            }
+
+            state.providers.ollama.connected = false;
+            updateStatus('ollama', 'disconnected', 'Not available');
+            return false;
+        }
+
+        async function checkOpenAIConnection() {
+            try {
+                const endpoint = state.providers.openai.endpoint;
+                const apiKey = state.providers.openai.apiKey;
+
+                const headers = { 'Content-Type': 'application/json' };
+                if (apiKey) {
+                    headers['Authorization'] = `Bearer ${apiKey}`;
+                }
+
+                const response = await fetch(`${endpoint}/models`, {
+                    method: 'GET',
+                    headers: headers
+                });
+
+                if (response.ok) {
+                    state.providers.openai.connected = true;
+                    updateStatus('openai', 'connected', 'Connected');
+                    return true;
+                } else if (response.status === 401 && !apiKey) {
+                    updateStatus('openai', 'disconnected', 'API key required');
+                    return false;
+                }
+            } catch (error) {
+                console.error('OpenAI connection failed:', error);
+            }
+
+            state.providers.openai.connected = false;
+            updateStatus('openai', 'disconnected', 'Not available');
+            return false;
+        }
+
+        function updateStatus(provider, status, text) {
+            const headerDot = provider === 'ollama' ? elements.ollamaStatusDot : elements.openaiStatusDot;
+            const headerText = provider === 'ollama' ? elements.ollamaStatusText : elements.openaiStatusText;
+            const sideDot = provider === 'ollama' ? elements.ollamaSideStatus : elements.openaiSideStatus;
+            const sideText = provider === 'ollama' ? elements.ollamaSideText : elements.openaiSideText;
+
+            headerDot.className = 'status-dot';
+            sideDot.className = 'status-dot';
+
+            if (status === 'connected') {
+                headerDot.classList.add('connected');
+                sideDot.classList.add('connected');
+            } else if (status === 'checking') {
+                headerDot.classList.add('checking');
+                sideDot.classList.add('checking');
+            }
+
+            headerText.textContent = text;
+            sideText.textContent = text;
+        }
+
+        async function connectToProvider(provider) {
+            const config = state.providers[provider];
+            
+            if (provider === 'ollama') {
+                config.endpoint = elements.ollamaEndpoint.value.trim();
+                localStorage.setItem('ollama_endpoint', config.endpoint);
+            } else {
+                config.endpoint = elements.openaiEndpoint.value.trim();
+                config.apiKey = elements.openaiApiKey.value.trim();
+                localStorage.setItem('openai_endpoint', config.endpoint);
+                if (config.apiKey) {
+                    sessionStorage.setItem('openai_api_key', config.apiKey);
+                } else {
+                    sessionStorage.removeItem('openai_api_key');
+                }
+            }
+
+            const connected = await checkProviderConnection(provider);
+
+            if (connected) {
+                const providerName = provider === 'ollama' ? 'Ollama' : 
+                    (config.endpoint.includes('localhost') || config.endpoint.includes('127.0.0.1')) 
+                    ? 'Local API server' : 'OpenAI API';
+                showSuccess(`Successfully connected to ${providerName}`);
+                selectProvider(provider);
+                
+                const configElement = provider === 'ollama' ? elements.ollamaConfig : elements.openaiConfig;
+                const toggleElement = provider === 'ollama' ? elements.ollamaToggle : elements.openaiToggle;
+                configElement.classList.remove('show');
+                toggleElement.classList.remove('expanded');
+            } else {
+                showError(`Failed to connect to ${config.name}. Please check your endpoint configuration.`);
+            }
+        }
+
+        async function selectProvider(provider) {
+            state.activeProvider = provider;
+            await loadModels();
+        }
+
+        async function loadModels() {
+            if (!state.activeProvider) {
+                showError('Please connect to a provider first');
+                return;
+            }
+
+            const config = state.providers[state.activeProvider];
+            
+            if (!config.connected) {
+                showError(`${config.name} is not connected`);
+                return;
+            }
+
+            try {
+                elements.refreshModels.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+                elements.refreshModels.disabled = true;
+
+                if (state.activeProvider === 'ollama') {
+                    await loadOllamaModels();
+                } else {
+                    await loadOpenAIModels();
+                }
+
+                elements.refreshModels.disabled = false;
                 hideError();
             } catch (error) {
                 showError(`Failed to load models: ${error.message}`);
-                modelList.innerHTML = '<li class="model-item"><span class="model-name">Error loading models</span></li>';
+                elements.modelList.innerHTML = '<li class="model-item disabled"><span class="model-name">Error loading models</span></li>';
             } finally {
-                refreshModelsBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Refresh Models';
-                refreshModelsBtn.disabled = false;
+                elements.refreshModels.innerHTML = '<i class="fas fa-sync-alt"></i> Refresh Models';
+                elements.refreshModels.disabled = false;
             }
         }
-        
-        function renderModelList() {
-            modelList.innerHTML = '';
+
+        async function loadOllamaModels() {
+            const response = await fetch(`${state.providers.ollama.endpoint}/api/tags`);
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+            const data = await response.json();
+            state.providers.ollama.models = data.models || [];
+
+            if (state.providers.ollama.models.length === 0) {
+                throw new Error('No models found. Pull models using: ollama pull <model-name>');
+            }
+
+            renderModelList(state.providers.ollama.models, 'ollama');
+        }
+
+        async function loadOpenAIModels() {
+            const headers = { 'Content-Type': 'application/json' };
+            if (state.providers.openai.apiKey) {
+                headers['Authorization'] = `Bearer ${state.providers.openai.apiKey}`;
+            }
+
+            const response = await fetch(`${state.providers.openai.endpoint}/models`, { headers });
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+            const data = await response.json();
+            
+            // Handle both OpenAI format and LM Studio format
+            let allModels = [];
+            if (data.data && Array.isArray(data.data)) {
+                // OpenAI/LM Studio format with data array
+                allModels = data.data;
+            } else if (data.models && Array.isArray(data.models)) {
+                // Alternative format some APIs use
+                allModels = data.models;
+            } else if (Array.isArray(data)) {
+                // Direct array format
+                allModels = data;
+            }
+
+            // Extract model IDs - handle different response formats
+            state.providers.openai.models = allModels
+                .map(m => {
+                    let modelId = '';
+                    if (typeof m === 'string') {
+                        modelId = m;
+                    } else if (m.id) {
+                        modelId = m.id;
+                    } else if (m.name) {
+                        modelId = m.name;
+                    } else if (m.model) {
+                        modelId = m.model;
+                    }
+                    return { name: modelId, size: 0 };
+                })
+                .filter(m => m.name) // Remove any empty entries
+                .sort((a, b) => a.name.localeCompare(b.name));
+
+            if (state.providers.openai.models.length === 0) {
+                throw new Error('No models found. Ensure your API server has models loaded.');
+            }
+
+            renderModelList(state.providers.openai.models, 'openai');
+        }
+
+        function renderModelList(models, provider) {
+            elements.modelList.innerHTML = '';
+
             if (models.length === 0) {
-                modelList.innerHTML = '<li class="model-item"><span class="model-name">No models available</span></li>';
+                elements.modelList.innerHTML = '<li class="model-item disabled"><span class="model-name">No models available</span></li>';
                 return;
             }
+
             models.forEach(model => {
                 const li = document.createElement('li');
                 li.className = 'model-item';
-                if (model.name === selectedModel) li.classList.add('active');
-                li.innerHTML = `<span class="model-name">${model.name}</span><span class="model-size">${formatModelSize(model.size)}</span>`;
+                if (model.name === state.selectedModel) li.classList.add('active');
+
+                const sizeDisplay = provider === 'ollama' && model.size ? formatModelSize(model.size) : '';
+                li.innerHTML = `<span class="model-name">${model.name}</span>${sizeDisplay ? `<span class="model-size">${sizeDisplay}</span>` : ''}`;
+
                 li.addEventListener('click', () => {
-                    selectedModel = model.name;
+                    state.selectedModel = model.name;
                     updateSelectedModel();
+                    enableGenerateButtons();
                 });
-                modelList.appendChild(li);
+
+                elements.modelList.appendChild(li);
             });
+
+            if (!state.selectedModel && models.length > 0) {
+                state.selectedModel = models[0].name;
+                updateSelectedModel();
+                enableGenerateButtons();
+            }
         }
-        
+
         function updateSelectedModel() {
-            const modelItems = document.querySelectorAll('.model-item');
-            modelItems.forEach(item => {
+            document.querySelectorAll('.model-item').forEach(item => {
                 const modelNameElement = item.querySelector('.model-name');
-                if (modelNameElement && modelNameElement.textContent === selectedModel) {
+                if (modelNameElement && modelNameElement.textContent === state.selectedModel) {
                     item.classList.add('active');
                 } else {
                     item.classList.remove('active');
                 }
             });
         }
-        
+
+        function enableGenerateButtons() {
+            elements.fastBtn.disabled = false;
+            elements.advancedBtn.disabled = false;
+        }
+
         function formatModelSize(bytes) {
-            if (bytes === undefined) return 'N/A';
+            if (!bytes || bytes === 0) return '';
             const sizes = ['B', 'KB', 'MB', 'GB'];
-            if (bytes === 0) return '0 B';
             const i = Math.floor(Math.log(bytes) / Math.log(1024));
             return Math.round(bytes / Math.pow(1024, i)) + ' ' + sizes[i];
         }
-        
-        function getFastModelSystemPrompt(originalText) {
-            return `You are a prompt engineering expert. Transform the following casual prompt into a concise, clear, and structured version that maintains the original intent while being more specific and professional.
+
+        function getSystemPrompt(mode, originalText) {
+            const basePrompt = mode === 'fast' 
+                ? `You are a prompt engineering expert. Transform the following casual prompt into a concise, clear, and structured version that maintains the original intent while being more specific and professional.
 
 Rules:
 - Keep it concise (2-4 sentences maximum)
-- Assign a clear role or expertise area at the beginning, Begin it with: "You are an experienced [profession/expert] with [specific expertise]..."
+- Assign a clear role or expertise area at the beginning: "You are an experienced [profession/expert] with [specific expertise]..."
 - Make requirements specific and actionable
 - Preserve the original request's core intent exactly
 - Use professional language while staying accessible
 - Do not add bullet points, numbered lists, or extensive formatting
 - Focus on clarity and directness
 - Produce the response in the same language used by the user in the original prompt
-- Strictly avoid introducing any information, data, names, numbers, or assumptions not explicitly provided by the user; construct the prompt solely based on the user’s supplied inputs without conjecture or embellishment.
+- Strictly avoid introducing any information, data, names, numbers, or assumptions not explicitly provided by the user
 
 Original Prompt: ${originalText}
 
-Enhanced Prompt (provide only the improved version):`;
-        }
-        
-        function getAdvancedModelSystemPrompt(originalText) {
-            return `You are an expert prompt engineer specializing in creating comprehensive, professional prompts that maximize AI model performance and output quality.
+Enhanced Prompt (provide only the improved version):`
+                : `You are an expert prompt engineer specializing in creating comprehensive, professional prompts that maximize AI model performance and output quality.
 
 Transform the following casual prompt into a highly detailed, professional prompt following this exact structure:
 
@@ -302,143 +728,227 @@ Requirements:
 - Include specific guidance on approach, deliverables, and quality
 - Preserve the original request's intent while significantly expanding clarity and professionalism
 - Produce the response in the same language used by the user in the original prompt
-- Strictly avoid introducing any information, data, names, numbers, or assumptions not explicitly provided by the user; construct the prompt solely based on the user’s supplied inputs without conjecture or embellishment.
+- Strictly avoid introducing any information, data, names, numbers, or assumptions not explicitly provided by the user
 
 Original Prompt: ${originalText}
 
 Enhanced Prompt (provide only the improved version with professional structure):`;
+
+            return basePrompt;
         }
-        
+
         async function enhancePrompt(mode) {
-            const promptText = originalPrompt.value.trim();
+            const promptText = elements.originalPrompt.value.trim();
+
             if (!promptText) {
-                showError('Please enter a prompt to enhance.');
+                showError('Please enter a prompt to enhance');
                 return;
             }
-            if (!selectedModel) {
-                showError('Please select a model from the sidebar.');
+
+            if (!state.activeProvider) {
+                showError('Please connect to a provider first');
                 return;
             }
-            if (isGenerating) return;
-            
-            isGenerating = true;
-            fastBtn.disabled = true;
-            advancedBtn.disabled = true;
-            
+
+            if (!state.selectedModel) {
+                showError('Please select a model');
+                return;
+            }
+
+            if (state.isGenerating) return;
+
+            state.isGenerating = true;
+            elements.fastBtn.disabled = true;
+            elements.advancedBtn.disabled = true;
+
             if (mode === 'fast') {
-                fastBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
+                elements.fastBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
             } else {
-                advancedBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
+                elements.advancedBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
             }
-            
-            streamingIndicator.classList.add('active');
-            enhancedPrompt.value = '';
+
+            elements.streamingIndicator.classList.add('active');
+            elements.enhancedPrompt.value = '';
             hideError();
-            
-            // Show model indicator
-            modelIndicator.style.display = 'inline-flex';
-            modelIndicator.className = `model-indicator ${mode}`;
-            modelType.textContent = mode === 'fast' ? 'Fast Model' : 'Advanced Model';
-            
-            abortController = new AbortController();
-            
+            hideSuccess();
+
+            elements.modelIndicator.style.display = 'inline-flex';
+            elements.modelIndicator.className = `model-indicator ${mode}`;
+            elements.modelType.textContent = mode === 'fast' ? 'Fast Mode' : 'Advanced Mode';
+
+            state.abortController = new AbortController();
+
             try {
-                const systemPrompt = mode === 'fast' 
-                    ? getFastModelSystemPrompt(promptText)
-                    : getAdvancedModelSystemPrompt(promptText);
-                
-                const response = await fetch(`${OLLAMA_BASE_URL}/api/generate`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        model: selectedModel,
-                        prompt: systemPrompt,
-                        stream: true,
-                        options: { 
-                            temperature: mode === 'fast' ? 0.6 : 0.7,
-                            top_p: 0.9,
-                            top_k: 40
-                        }
-                    }),
-                    signal: abortController.signal
-                });
-                
-                if (!response.ok) throw new Error(`API request failed: ${response.status}`);
-                
-                const reader = response.body.getReader();
-                const decoder = new TextDecoder();
-                let buffer = '';
-                
-                while (true) {
-                    const { done, value } = await reader.read();
-                    if (done) break;
-                    
-                    buffer += decoder.decode(value, { stream: true });
-                    const lines = buffer.split('\n');
-                    buffer = lines.pop();
-                    
-                    for (const line of lines) {
-                        if (line.trim() === '') continue;
-                        try {
-                            const json = JSON.parse(line);
-                            if (json.response) {
-                                enhancedPrompt.value += json.response;
-                                enhancedPrompt.scrollTop = enhancedPrompt.scrollHeight;
-                            }
-                            if (json.done) break;
-                        } catch (e) {
-                            console.error('Failed to parse JSON:', e);
-                        }
-                    }
+                if (state.activeProvider === 'ollama') {
+                    await enhanceWithOllama(mode, promptText);
+                } else {
+                    await enhanceWithOpenAI(mode, promptText);
                 }
-                
-                if (!enhancedPrompt.value.trim()) {
-                    throw new Error('No response received from the model.');
+
+                if (!elements.enhancedPrompt.value.trim()) {
+                    throw new Error('No response received from the model');
                 }
-                
             } catch (error) {
                 if (error.name === 'AbortError') {
-                    showError('Request was cancelled.');
+                    showError('Request was cancelled');
                 } else {
                     showError(`Failed to enhance prompt: ${error.message}`);
                 }
             } finally {
-                isGenerating = false;
-                fastBtn.disabled = false;
-                advancedBtn.disabled = false;
-                fastBtn.innerHTML = '<i class="fas fa-bolt"></i> Fast Model';
-                advancedBtn.innerHTML = '<i class="fas fa-brain"></i> Advanced Model';
-                streamingIndicator.classList.remove('active');
-                abortController = null;
+                state.isGenerating = false;
+                elements.fastBtn.disabled = false;
+                elements.advancedBtn.disabled = false;
+                elements.fastBtn.innerHTML = '<i class="fas fa-bolt"></i> Fast Mode';
+                elements.advancedBtn.innerHTML = '<i class="fas fa-brain"></i> Advanced Mode';
+                elements.streamingIndicator.classList.remove('active');
+                state.abortController = null;
             }
         }
-        
+
+        async function enhanceWithOllama(mode, promptText) {
+            const systemPrompt = getSystemPrompt(mode, promptText);
+
+            const response = await fetch(`${state.providers.ollama.endpoint}/api/generate`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    model: state.selectedModel,
+                    prompt: systemPrompt,
+                    stream: true,
+                    options: {
+                        temperature: mode === 'fast' ? 0.6 : 0.7,
+                        top_p: 0.9,
+                        top_k: 40
+                    }
+                }),
+                signal: state.abortController.signal
+            });
+
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder();
+            let buffer = '';
+
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+
+                buffer += decoder.decode(value, { stream: true });
+                const lines = buffer.split('\n');
+                buffer = lines.pop();
+
+                for (const line of lines) {
+                    if (line.trim() === '') continue;
+                    try {
+                        const json = JSON.parse(line);
+                        if (json.response) {
+                            elements.enhancedPrompt.value += json.response;
+                            elements.enhancedPrompt.scrollTop = elements.enhancedPrompt.scrollHeight;
+                        }
+                        if (json.done) break;
+                    } catch (e) {
+                        console.error('Failed to parse JSON:', e);
+                    }
+                }
+            }
+        }
+
+        async function enhanceWithOpenAI(mode, promptText) {
+            const systemPrompt = getSystemPrompt(mode, promptText);
+
+            const headers = { 'Content-Type': 'application/json' };
+            if (state.providers.openai.apiKey) {
+                headers['Authorization'] = `Bearer ${state.providers.openai.apiKey}`;
+            }
+
+            const response = await fetch(`${state.providers.openai.endpoint}/chat/completions`, {
+                method: 'POST',
+                headers: headers,
+                body: JSON.stringify({
+                    model: state.selectedModel,
+                    messages: [{ role: 'user', content: systemPrompt }],
+                    stream: true,
+                    temperature: mode === 'fast' ? 0.6 : 0.7,
+                    max_tokens: 2000
+                }),
+                signal: state.abortController.signal
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({}));
+                throw new Error(errorData.error?.message || `HTTP ${response.status}`);
+            }
+
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder();
+            let buffer = '';
+
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+
+                buffer += decoder.decode(value, { stream: true });
+                const lines = buffer.split('\n');
+                buffer = lines.pop();
+
+                for (const line of lines) {
+                    if (line.trim() === '' || !line.startsWith('data: ')) continue;
+                    if (line.includes('[DONE]')) break;
+
+                    try {
+                        const jsonStr = line.replace('data: ', '');
+                        const json = JSON.parse(jsonStr);
+                        const content = json.choices?.[0]?.delta?.content;
+
+                        if (content) {
+                            elements.enhancedPrompt.value += content;
+                            elements.enhancedPrompt.scrollTop = elements.enhancedPrompt.scrollHeight;
+                        }
+                    } catch (e) {
+                        console.error('Failed to parse SSE data:', e);
+                    }
+                }
+            }
+        }
+
         async function copyEnhancedPrompt() {
-            const text = enhancedPrompt.value.trim();
+            const text = elements.enhancedPrompt.value.trim();
             if (!text) {
-                showError('No enhanced prompt to copy.');
+                showError('No enhanced prompt to copy');
                 return;
             }
+
             try {
                 await navigator.clipboard.writeText(text);
-                copyBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
-                copyBtn.classList.add('success');
+                elements.copyBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                elements.copyBtn.classList.add('success');
                 setTimeout(() => {
-                    copyBtn.innerHTML = '<i class="far fa-copy"></i> Copy';
-                    copyBtn.classList.remove('success');
+                    elements.copyBtn.innerHTML = '<i class="far fa-copy"></i> Copy';
+                    elements.copyBtn.classList.remove('success');
                 }, 2000);
             } catch (error) {
-                showError('Failed to copy text to clipboard.');
+                showError('Failed to copy text to clipboard');
             }
         }
-        
+
         function showError(message) {
-            errorText.textContent = message;
-            errorMessage.classList.add('show');
+            elements.errorText.textContent = message;
+            elements.errorMessage.classList.add('show');
         }
-        
+
         function hideError() {
-            errorMessage.classList.remove('show');
+            elements.errorMessage.classList.remove('show');
+        }
+
+        function showSuccess(message) {
+            elements.successText.textContent = message;
+            elements.successMessage.classList.add('show');
+            setTimeout(() => hideSuccess(), 5000);
+        }
+
+        function hideSuccess() {
+            elements.successMessage.classList.remove('show');
         }
     </script>
 </body>
